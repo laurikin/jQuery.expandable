@@ -64,7 +64,8 @@
           break;
         case 'fade':
           self.fadeOut('fast', function(){
-            self.css({ height: full_height });
+            self.css({ height: full_height
+             });
             self.fadeIn('fast');
           });
           break;
