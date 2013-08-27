@@ -104,6 +104,8 @@
       return self[0].scrollHeight;
     }
 
+    return self;
+
   }
 
 
