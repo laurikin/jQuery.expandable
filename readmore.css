@@ -1,0 +1,9 @@
+#container{
+  overflow: hidden;
+  width: 300px;
+  height: 90px;
+}
+
+.full-height {
+  height: inherit !important;
+}
