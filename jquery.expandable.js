@@ -17,6 +17,7 @@
 
     defaults = {
       animation: false,
+      anim_duration: 300,
       afterContract: function(){},
       afterExpand: function(){}
     };
@@ -55,18 +56,19 @@
 
     var expand = function(callback){
       var full_height = fullHeight();
+      var dur = options.anim_duration;
       switch ( animationType() ) {
         case false:
-          self.addClass('full-height');
+          self.css({ height: full_height });
           break;
         case 'slide':
-          self.animate({ height: full_height });
+          self.animate({ height: full_height }, dur );
           break;
         case 'fade':
-          self.fadeOut('fast', function(){
+          self.fadeOut(dur, function(){
             self.css({ height: full_height
              });
-            self.fadeIn('fast');
+            self.fadeIn(dur);
           });
           break;
       }
@@ -74,17 +76,18 @@
     }
 
     var contract = function(callback){
+      var dur = options.anim_duration;
       switch ( animationType() ) {
         case false:
-          self.removeClass('full-height');
+          self.css({ height: origHeight() });
           break;
         case 'slide':
-          self.animate({ height: origHeight() });
+          self.animate({ height: origHeight() }, dur );
           break;
         case 'fade':
-          self.fadeOut('fast', function(){
+          self.fadeOut(dur, function(){
             self.css({ height: origHeight() });
-            self.fadeIn('fast');
+            self.fadeIn(dur);
           });
           break;
       }
