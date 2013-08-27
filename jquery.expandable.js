@@ -1,5 +1,11 @@
 ;(function($){
 
+    var defaults = {
+      animation: false,
+      anim_duration: 300,
+      afterContract: function(){},
+      afterExpand: function(){}
+    };
 
 
   $.fn.expandable = function( readmore, readless, settings ) {
@@ -7,26 +13,13 @@
     var self,
       read_more,
       read_less,
-      options,
+      config,
       defaults,
       orig_height;
 
     self = this;
 
-    options = settings ? settings : {} ;
-
-    defaults = {
-      animation: false,
-      anim_duration: 300,
-      afterContract: function(){},
-      afterExpand: function(){}
-    };
-
-    for ( def in defaults ) {
-      if ( options[def] === undefined ) {
-        options[def] = defaults[def];
-      }
-    }
+    config =  $.extend( {}, defaults, settings );
 
     orig_height = self.height();
 
@@ -43,20 +36,20 @@
     };
 
     read_more.on('click', function(){
-      expand.call(this, options.afterExpand );
+      expand.call(this, config.afterExpand );
       toggleButtons();
       return false;
     });
 
     read_less.on('click', function(){
-      contract.call(this, options.afterContract );
+      contract.call(this, config.afterContract );
       toggleButtons();
       return false;
     });
 
     var expand = function(callback){
       var full_height = fullHeight();
-      var dur = options.anim_duration;
+      var dur = config.anim_duration;
       switch ( animationType() ) {
         case false:
           self.css({ height: full_height });
@@ -76,7 +69,7 @@
     }
 
     var contract = function(callback){
-      var dur = options.anim_duration;
+      var dur = config.anim_duration;
       switch ( animationType() ) {
         case false:
           self.css({ height: origHeight() });
@@ -100,7 +93,7 @@
     }
 
     var animationType = function(){
-      return options.animation;
+      return config.animation;
     }
 
     var origHeight = function(){
