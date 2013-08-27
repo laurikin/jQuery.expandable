@@ -7,9 +7,6 @@
     afterExpand: function(){}
   };
 
-
-
-
   var Expandable = function( element, readmore, readless, settings ){
 
     var self = this;
@@ -50,7 +47,7 @@
     expand: function(callback){
       var el = this.el;
       var full_height = this.fullHeight.call(this);
-      var dur = 300;
+      var dur = this.config.anim_duration;
       switch ( this.animationType.call(this) ) {
         case false:
           el.css({ height: full_height });
