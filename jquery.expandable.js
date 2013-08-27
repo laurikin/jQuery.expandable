@@ -2,7 +2,7 @@
 
 
 
-  $.fn.readMore = function( readmore, readless, settings ) {
+  $.fn.expandable = function( readmore, readless, settings ) {
 
     var self,
       read_more,
@@ -30,8 +30,8 @@
 
     orig_height = self.height();
 
-    read_more = $(document.getElementById(readmore));
-    read_less = $(document.getElementById(readless));
+    read_more = $(readmore);
+    read_less = $(readless);
 
     read_more.hide();
     read_less.hide();
