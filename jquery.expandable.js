@@ -1,110 +1,115 @@
 ;(function($){
 
-    var defaults = {
-      animation: false,
-      anim_duration: 300,
-      afterContract: function(){},
-      afterExpand: function(){}
+  var defaults = {
+    animation: false,
+    anim_duration: 300,
+    afterContract: function(){},
+    afterExpand: function(){}
+  };
+
+
+
+
+  var Expandable = function( element, readmore, readless, settings ){
+
+    var self = this;
+
+    self.el = element
+    self.config =  $.extend( {}, defaults, settings );
+    self.orig_height = self.el.height();
+    self.read_more = $(readmore).hide();
+    self.read_less = $(readless).hide();
+
+    // Checking if element has vertical overflow
+    if( self.el[0].offsetHeight < self.el[0].scrollHeight ){
+      self.read_more.show();
+      self.init()
     };
+
+  };
+
+  Expandable.prototype = {
+
+    init: function(){
+
+      var self = this;
+
+      this.read_more.on('click', function(){
+        self.expand.call(self, self.config.afterExpand );
+        self.toggleButtons.call(self);
+        return false;
+      });
+
+      this.read_less.on('click', function(){
+        self.contract.call(self, self.config.afterContract );
+        self.toggleButtons.call(self);
+        return false;
+      });
+
+    },
+    expand: function(callback){
+      var el = this.el;
+      var full_height = this.fullHeight.call(this);
+      var dur = 300;
+      switch ( this.animationType.call(this) ) {
+        case false:
+          el.css({ height: full_height });
+          break;
+        case 'slide':
+          el.animate({ height: full_height }, dur );
+          break;
+        case 'fade':
+          el.fadeOut(dur, function(){
+            el.css({ height: full_height
+             });
+            el.fadeIn(dur);
+          });
+          break;
+      }
+      callback.call(el);
+    },
+    contract: function(callback){
+      var el = this.el;
+      var dur = this.config.anim_duration;
+      var orig_height = this.origHeight.call(this);
+      switch ( this.animationType.call(this) ) {
+        case false:
+          el.css({ height: orig_height });
+          break;
+        case 'slide':
+          el.animate({ height: orig_height }, dur );
+          break;
+        case 'fade':
+          el.fadeOut(dur, function(){
+            el.css({ height: orig_height });
+            el.fadeIn(dur);
+          });
+          break;
+      }
+      callback.call(el);
+    },
+    animationType: function(){
+      return this.config.animation;
+    },
+    toggleButtons: function(){
+      this.read_less.toggle();
+      this.read_more.toggle();
+    },
+    origHeight: function(){
+      return this.orig_height;
+    },
+    fullHeight: function(){
+      return this.el[0].scrollHeight;
+    }
+
+  }
 
 
   $.fn.expandable = function( readmore, readless, settings ) {
 
-    var self,
-      read_more,
-      read_less,
-      config,
-      defaults,
-      orig_height;
+    new Expandable( this, readmore, readless, settings );
 
-    self = this;
-
-    config =  $.extend( {}, defaults, settings );
-
-    orig_height = self.height();
-
-    read_more = $(readmore);
-    read_less = $(readless);
-
-    read_more.hide();
-    read_less.hide();
-
-
-    // Checking if element has vertical overflow
-    if( self[0].offsetHeight < self[0].scrollHeight ){
-      read_more.show();
-    };
-
-    read_more.on('click', function(){
-      expand.call(this, config.afterExpand );
-      toggleButtons();
-      return false;
-    });
-
-    read_less.on('click', function(){
-      contract.call(this, config.afterContract );
-      toggleButtons();
-      return false;
-    });
-
-    var expand = function(callback){
-      var full_height = fullHeight();
-      var dur = config.anim_duration;
-      switch ( animationType() ) {
-        case false:
-          self.css({ height: full_height });
-          break;
-        case 'slide':
-          self.animate({ height: full_height }, dur );
-          break;
-        case 'fade':
-          self.fadeOut(dur, function(){
-            self.css({ height: full_height
-             });
-            self.fadeIn(dur);
-          });
-          break;
-      }
-      callback.call(self);
-    }
-
-    var contract = function(callback){
-      var dur = config.anim_duration;
-      switch ( animationType() ) {
-        case false:
-          self.css({ height: origHeight() });
-          break;
-        case 'slide':
-          self.animate({ height: origHeight() }, dur );
-          break;
-        case 'fade':
-          self.fadeOut(dur, function(){
-            self.css({ height: origHeight() });
-            self.fadeIn(dur);
-          });
-          break;
-      }
-      callback.call(self);
-    }
-
-    var toggleButtons = function(){
-      read_less.toggle();
-      read_more.toggle();
-    }
-
-    var animationType = function(){
-      return config.animation;
-    }
-
-    var origHeight = function(){
-      return orig_height;
-    }
-
-    var fullHeight = function(){
-      return self[0].scrollHeight;
-    }
-
-    return self;
+    return this;
 
   }
 
